@@ -18,8 +18,18 @@ app.use(cors());
 
 io.on("connection", (socket) => {
   socket.on("test", (data) => {
-    socket.broadcast.emit("test", data);
-    socket.emit("test", data);
+    io.emit("test", data);
+  });
+
+  // Приєднання до кімнати
+  socket.on("join_room", (data) => {
+    socket.join(data);
+    socket.broadcast.to(data).emit("room", data);
+  });
+
+  // DISCONNECT
+  socket.on("disconnect", () => {
+    console.log("socket disconnected!", socket.id);
   });
 });
 
